@@ -3316,3 +3316,403 @@ int main() {
     displayBalance(&aliceAccount);
 
     return 0;
+# Week 9
+
+
+## inheritance.cpp
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Shape {
+protected:
+    string color;
+public:
+    Shape(string c) {
+        color = c;
+        cout << "Shape constructor called." << endl;
+    }
+    void displayColor() {
+        cout << "This shape's color is: " << color << endl;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(string c, double r) : Shape(c) {
+        radius = r;
+        cout << "Circle constructor called." << endl;
+    }
+    void displayCircleInfo() {
+        cout << "This circle is " << color << " and has a radius of " << radius << endl;
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+public:
+    Rectangle(string c, double w, double h) : Shape(c) {
+        width = w;
+        height = h;
+        cout << "Rectangle constructor called." << endl;
+    }
+    void displayRectangleInfo() {
+        cout << "This rectangle is " << color << " and is " << width << "x" << height << endl;
+    }
+};
+
+int main() {
+    cout << "--- Creating a Circle ---" << endl;
+    Circle myCircle("Red", 5.0);
+    myCircle.displayColor();   // Inherited method from Shape
+    myCircle.displayCircleInfo();   // Unique method from Circle
+    cout << "\n--- Creating a Rectangle ---" << endl;
+    Rectangle myRect("Blue", 4.0, 6.0);
+    myRect.displayColor();   // Inherited method from Shape
+    myRect.displayRectangleInfo();   // Unique method from Rectangle
+
+    return 0;
+}
+
+//g++ inheritance.cpp -o inheritance
+//./inheritance
+```
+
+
+## virtual_functions.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Animal {
+public:
+    void speak() {
+        cout << "Animal makes a generic sound." << endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void speak() {
+        cout << "Dog barks: Woof! Woof!" << endl;
+    }
+};
+
+int main() {
+    cout << "--- Without Virtual Keyword ---" << endl;
+    Animal* myPet;
+    myPet = new Dog();
+    myPet->speak();   // <--- analyze this line
+    delete myPet;
+
+    return 0;
+}
+
+//g++ virtual_functions.cpp -o virtual_functions
+//./virtual_functions
+```
+
+
+## abstract_classes.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Shape {
+public:
+    virtual double calculateArea() = 0;
+};
+
+class Square : public Shape {
+private:
+    double side;
+public:
+    Square(double s) { side = s; }
+    double calculateArea() {
+        return side * side;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r) { radius = r; }
+    double calculateArea() {
+        return 3.14159 * radius * radius;
+    }
+};
+
+int main() {
+    // Uncomment the line below to see the compiler error
+    Square s(5.0);
+    Circle c(3.0);
+    cout << "Area of Square: " << s.calculateArea() << endl;
+    cout << "Area of Circle: " << c.calculateArea() << endl;
+
+    return 0;
+}
+
+//g++ abstract_classes.cpp -o abstract_classes
+//./abstract_classes
+```
+
+
+## polymorphic_drawing.cpp
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// 1. abstract base class
+class Shape {
+public:
+    virtual void draw() = 0;
+    virtual ~Shape() {}
+};
+
+// 2. derived classes
+class Circle : public Shape {
+public:
+    void draw() override {
+        cout << "Drawing a Circle ◯" << endl;
+    }
+};
+
+class Rectangle : public Shape {
+public:
+    void draw() override {
+        cout << "Drawing a Rectangle ▭" << endl;
+    }
+};
+
+class Triangle : public Shape {
+public:
+    void draw() override {
+        cout << "Drawing a Triangle △" << endl;
+    }
+};
+
+// 3. a polymorphic function
+void renderCanvas(Shape* s) {
+    s->draw();
+}
+
+int main() {
+    vector<Shape*> canvas;
+    canvas.push_back(new Circle());
+    canvas.push_back(new Rectangle());
+    canvas.push_back(new Triangle());
+    canvas.push_back(new Circle());
+    cout << "--- Rendering Canvas ---" << endl;
+    for (int i = 0; i < canvas.size(); i++) {
+        renderCanvas(canvas[i]);
+    }
+    cout << "\n--- Cleaning Up Memory ---" << endl;
+    for (int i = 0; i < canvas.size(); i++) {
+        delete canvas[i];
+    }
+
+    return 0;
+}
+
+//g++ polymorphic_drawing.cpp -o polymorphic_drawing
+//./polymorphic_drawing
+```
+
+
+## inheritance.c
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct Shape {
+    char color[20];
+};
+
+struct Circle {
+    struct Shape base;
+    double radius;
+};
+
+int main() {
+    // 1. Create a Circle
+    struct Circle myCircle;
+
+    // 2. Initialize the "inherited" data
+    strcpy(myCircle.base.color, "Red");
+
+    // 3. Initialize the Circle's unique data
+    myCircle.radius = 5.0;
+
+    // 4. Display the information
+    printf("Circle Color (Inherited): %s\n", myCircle.base.color);
+    printf("Circle Radius (Specific): %.2f\n", myCircle.radius);
+
+    return 0;
+}
+
+//gcc inheritance.c -o inheritance
+//./inheritance
+```
+
+
+## virtual_functions.c
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+// 1. Define a Function Pointer Type
+typedef void (*SpeakFunction)();
+struct Animal {
+    SpeakFunction speak;
+};
+
+struct Dog {
+    struct Animal base;   // Embed the base
+};
+
+void genericSound() {
+    printf("Animal makes a generic sound.\n");
+}
+
+void dogBark() {
+    printf("Dog barks: Woof! Woof!\n");
+}
+
+int main() {
+    printf("--- Simulating Non-Virtual (Base only) ---\n");
+    struct Animal myAnimal;
+    myAnimal.speak = genericSound;
+    myAnimal.speak();   // Calls genericSound()
+    printf("\n--- Simulating Virtual (Dynamic binding) ---\n");
+    struct Dog myDog;
+    myDog.base.speak = dogBark;
+    struct Animal* pet = (struct Animal*)&myDog;
+    pet->speak();   // <--- analyze this line
+
+    return 0;
+}
+
+//gcc virtual_functions.c -o virtual_functions
+//./virtual_functions
+```
+
+
+## abstract_structs.c
+
+```c
+#include <stdio.h>
+
+struct Shape {
+    double (*calculateArea)(void* derivedShape);
+};
+
+struct Square {
+    struct Shape base;
+    double side;
+};
+
+struct Circle {
+    struct Shape base;
+    double radius;
+};
+
+double squareArea(void* shapePtr) {
+    struct Square* s = (struct Square*)shapePtr;
+
+    return s->side * s->side;
+}
+
+double circleArea(void* shapePtr) {
+    struct Circle* c = (struct Circle*)shapePtr;
+
+    return 3.14159 * c->radius * c->radius;
+}
+
+int main() {
+    // 1. Create a Square and ASSIGN its area function
+    struct Square sq;
+    sq.side = 5.0;
+    sq.base.calculateArea = squareArea;   // Filling the abstract slot!
+
+    // 2. Create a Circle and ASSIGN its area function
+    struct Circle circ;
+    circ.radius = 3.0;
+    circ.base.calculateArea = circleArea;   // Filling the abstract slot!
+
+    // 3. Call the functions
+    printf("Area of Square: %.2f\n", sq.base.calculateArea(&sq));
+    printf("Area of Circle: %.2f\n", circ.base.calculateArea(&circ));
+
+    return 0;
+}
+
+//gcc abstract_structs.c -o abstract_structs
+//./abstract_structs
+```
+
+
+## polymorphic_drawing.c
+
+```c
+#include <stdio.h>
+
+struct Shape {
+    void (*draw)();
+};
+
+struct Circle {
+    struct Shape base;
+};
+
+struct Rectangle {
+    struct Shape base;
+};
+
+struct Triangle {
+    struct Shape base;
+};
+
+void drawCircle() { printf("Drawing a Circle ◯\n"); }
+void drawRectangle() { printf("Drawing a Rectangle ▭\n"); }
+void drawTriangle() { printf("Drawing a Triangle △\n"); }
+void renderCanvas(struct Shape* shapePtr) {
+    shapePtr->draw();
+}
+
+int main() {
+    // 1. Create the derived objects and initialize their function pointers
+    struct Circle c1; c1.base.draw = drawCircle;
+    struct Rectangle r1; r1.base.draw = drawRectangle;
+    struct Triangle t1; t1.base.draw = drawTriangle;
+    struct Circle c2; c2.base.draw = drawCircle;
+
+    // 2. Create an array of base struct pointers
+    struct Shape* canvas[4];
+    canvas[0] = (struct Shape*)&c1;
+    canvas[1] = (struct Shape*)&r1;
+    canvas[2] = (struct Shape*)&t1;
+    canvas[3] = (struct Shape*)&c2;
+    printf("--- Rendering Canvas ---\n");
+
+    // 3. Loop through the canvas and draw everything
+    for (int i = 0; i < 4; i++) {
+        renderCanvas(canvas[i]);
+    }
+
+    return 0;
