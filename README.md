@@ -1693,3 +1693,455 @@ int main() {
 //gcc multiplication_table.c -o multiplication_table
 //./multiplication_table
 ```
+# Week 5
+
+
+## swap_by_value.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+void swapByValue(int a, int b) {
+    cout << " Inside function - Before swap: a = " << a << ", b = " << b << endl;
+    int temp = a;
+    a = b;
+    b = temp;
+    cout << " Inside function - After swap: a = " << a << ", b = " << b << endl;
+}
+
+int main() {
+    int x = 10;
+    int y = 20;
+    cout << "Before calling swapByValue:" << endl;
+    cout << " x = " << x << ", y = " << y << endl;
+    swapByValue(x, y);
+    cout << "After calling swapByValue:" << endl;
+    cout << " x = " << x << ", y = " << y << endl;
+    cout << "\nExplanation: The function received COPIES of x and y." << endl;
+    cout << "Changes made inside the function do not affect the originals." << endl;
+
+    return 0;
+}
+
+//g++ swap_by_value.cpp -o swap_by_value
+//./swap_by_value
+```
+
+
+## variable_scope.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+// Global variable
+int globalCounter = 100;
+void displayGlobal() {
+    cout << "Inside displayGlobal: globalCounter = " << globalCounter << endl;
+
+    // cout << localCounter; // ERROR: localCounter is not declared here
+}
+
+void modifyGlobal() {
+    globalCounter = 500;
+    cout << "Inside modifyGlobal: globalCounter changed to " << globalCounter << endl;
+}
+
+void localDemo() {
+    int globalCounter = 999;   // This SHADOWS the global variable
+    cout << "Inside localDemo: globalCounter = " << globalCounter << endl;
+}
+
+int main() {
+    int localCounter = 50;
+    cout << "In main: globalCounter = " << globalCounter << endl;
+    cout << "In main: localCounter = " << localCounter << endl;
+    displayGlobal();
+    modifyGlobal();
+    localDemo();
+    cout << "Back in main: globalCounter = " << globalCounter << endl;
+
+    // cout << globalCounterLocal; // ERROR: not declared
+
+    return 0;
+}
+
+//g++ variable_scope.cpp -o variable_scope
+//./variable_scope
+```
+
+
+## recursion_factorial.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int factorialRecursive(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+
+    return n * factorialRecursive(n - 1);
+}
+
+int factorialTail(int n, int accumulator = 1) {
+    if (n <= 1) {
+        return accumulator;
+    }
+
+    return factorialTail(n - 1, n * accumulator);
+}
+
+int main() {
+    int num;
+    cout << "Enter a number to calculate factorial: ";
+    cin >> num;
+    if (num < 0) {
+        cout << "Factorial is not defined for negative numbers." << endl;
+
+        return 1;
+    }
+    cout << "\nUsing simple recursion:" << endl;
+    cout << " " << num << "! = " << factorialRecursive(num) << endl;
+    cout << "\nUsing tail recursion:" << endl;
+    cout << " " << num << "! = " << factorialTail(num) << endl;
+    cout << "\n--- Comparison ---" << endl;
+    cout << "Simple recursion: Clear, matches mathematical definition." << endl;
+    cout << "Tail recursion: More efficient for large n (compiler optimization)." << endl;
+
+    return 0;
+}
+
+//g++ recursion_factorial.cpp -o recursion_factorial
+//./recursion_factorial
+```
+
+
+## geometry_library.cpp
+
+```cpp
+#include <iostream>
+#include <iomanip>   // For setprecision
+#include <cmath>   // For pow()
+
+using namespace std;
+
+// Constant: pi
+const double PI = 3.14159;
+double areaOfCircle(double radius) {
+    if (radius < 0) {
+        cout << "Error: Radius cannot be negative." << endl;
+
+        return 0.0;
+    }
+
+    return PI * radius * radius;
+}
+
+double areaOfRectangle(double length, double width) {
+    if (length < 0 || width < 0) {
+        cout << "Error: Length and width cannot be negative." << endl;
+
+        return 0.0;
+    }
+
+    return length * width;
+}
+
+double areaOfTriangle(double base, double height) {
+    if (base < 0 || height < 0) {
+        cout << "Error: Base and height cannot be negative." << endl;
+
+        return 0.0;
+    }
+
+    return 0.5 * base * height;
+}
+
+void displayMenu() {
+    cout << "\n===== GEOMETRY CALCULATOR =====" << endl;
+    cout << "1. Area of Circle" << endl;
+    cout << "2. Area of Rectangle" << endl;
+    cout << "3. Area of Triangle" << endl;
+    cout << "4. Exit" << endl;
+    cout << "Enter your choice: ";
+}
+
+int main() {
+    int choice;
+    double radius, length, width, base, height, area;
+    do {
+        displayMenu();
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "Enter radius: ";
+                cin >> radius;
+                area = areaOfCircle(radius);
+                cout << "Area of circle: " << fixed << setprecision(2) << area << endl;
+                break;
+            case 2:
+                cout << "Enter length: ";
+                cin >> length;
+                cout << "Enter width: ";
+                cin >> width;
+                area = areaOfRectangle(length, width);
+                cout << "Area of rectangle: " << fixed << setprecision(2) << area << endl;
+                break;
+            case 3:
+                cout << "Enter base: ";
+                cin >> base;
+                cout << "Enter height: ";
+                cin >> height;
+                area = areaOfTriangle(base, height);
+                cout << "Area of triangle: " << fixed << setprecision(2) << area << endl;
+                break;
+            case 4:
+                cout << "Goodbye!" << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
+//g++ geometry_library.cpp -o geometry_library
+//./geometry_library
+```
+
+
+## swap_by_value.c
+
+```c
+#include <stdio.h>
+
+void swapByValue(int a, int b) {
+    printf(" Inside function - Before swap: a = %d, b = %d\n", a, b);
+    int temp = a;
+    a = b;
+    b = temp;
+    printf(" Inside function - After swap: a = %d, b = %d\n", a, b);
+}
+
+int main() {
+    int x = 10;
+    int y = 20;
+    printf("Before calling swapByValue:\n");
+    printf(" x = %d, y = %d\n", x, y);
+    swapByValue(x, y);
+    printf("After calling swapByValue:\n");
+    printf(" x = %d, y = %d\n", x, y);
+    printf("\nExplanation: The function received COPIES of x and y.\n");
+    printf("Changes made inside the function do not affect the originals.\n");
+
+    return 0;
+}
+
+//gcc swap_by_value.c -o swap_by_value
+//./swap_by_value
+```
+
+
+## swap_by_pointer.c
+
+```c
+void swapByPointer(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int main() {
+    int x = 10, y = 20;
+    swapByPointer(&x, &y);
+    printf("x = %d, y = %d\n", x, y);
+
+    return 0;
+}
+
+//gcc swap_by_pointer.c -o swap_by_pointer
+//./swap_by_pointer
+```
+
+
+## variable_scope.c
+
+```c
+#include <stdio.h>
+
+// Global variable
+int globalCounter = 100;
+void displayGlobal() {
+    printf("Inside displayGlobal: globalCounter = %d\n", globalCounter);
+
+    // printf("%d", localCounter); // ERROR: localCounter not declared here
+}
+
+void modifyGlobal() {
+    globalCounter = 500;
+    printf("Inside modifyGlobal: globalCounter changed to %d\n", globalCounter);
+}
+
+void localDemo() {
+    int globalCounter = 999;   // This SHADOWS the global variable
+    printf("Inside localDemo: globalCounter = %d\n", globalCounter);
+}
+
+int main() {
+    int localCounter = 50;
+    printf("In main: globalCounter = %d\n", globalCounter);
+    printf("In main: localCounter = %d\n", localCounter);
+    displayGlobal();
+    modifyGlobal();
+    localDemo();
+    printf("Back in main: globalCounter = %d\n", globalCounter);
+
+    // printf("%d", globalCounterLocal); // ERROR: not declared
+
+    return 0;
+}
+
+//gcc variable_scope.c -o variable_scope
+//./variable_scope
+```
+
+
+## recursion_factorial.c
+
+```c
+#include <stdio.h>
+
+int factorialRecursive(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+
+    return n * factorialRecursive(n - 1);
+}
+
+int factorialTailHelper(int n, int accumulator) {
+    if (n <= 1) {
+        return accumulator;
+    }
+
+    return factorialTailHelper(n - 1, n * accumulator);
+}
+
+int factorialTail(int n) {
+    return factorialTailHelper(n, 1);
+}
+
+int main() {
+    int num;
+    printf("Enter a number to calculate factorial: ");
+    scanf("%d", &num);
+    if (num < 0) {
+        printf("Factorial is not defined for negative numbers.\n");
+
+        return 1;
+    }
+    printf("\nUsing simple recursion:\n");
+    printf(" %d! = %d\n", num, factorialRecursive(num));
+    printf("\nUsing tail recursion:\n");
+    printf(" %d! = %d\n", num, factorialTail(num));
+    printf("\n--- Comparison ---\n");
+    printf("Simple recursion: Clear, matches mathematical definition.\n");
+    printf("Tail recursion: More efficient for large n (compiler optimization).\n");
+
+    return 0;
+}
+
+//gcc recursion_factorial.c -o recursion_factorial
+//./recursion_factorial
+```
+
+
+## geometry_library.c
+
+```c
+#include <stdio.h>
+
+// Constant: pi
+#define PI 3.14159
+
+double areaOfCircle(double radius) {
+    if (radius < 0) {
+        printf("Error: Radius cannot be negative.\n");
+
+        return 0.0;
+    }
+
+    return PI * radius * radius;
+}
+
+double areaOfRectangle(double length, double width) {
+    if (length < 0 || width < 0) {
+        printf("Error: Length and width cannot be negative.\n");
+
+        return 0.0;
+    }
+
+    return length * width;
+}
+
+double areaOfTriangle(double base, double height) {
+    if (base < 0 || height < 0) {
+        printf("Error: Base and height cannot be negative.\n");
+
+        return 0.0;
+    }
+
+    return 0.5 * base * height;
+}
+
+void displayMenu() {
+    printf("\n===== GEOMETRY CALCULATOR =====\n");
+    printf("1. Area of Circle\n");
+    printf("2. Area of Rectangle\n");
+    printf("3. Area of Triangle\n");
+    printf("4. Exit\n");
+    printf("Enter your choice: ");
+}
+
+int main() {
+    int choice;
+    double radius, length, width, base, height, area;
+    do {
+        displayMenu();
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter radius: ");
+                scanf("%lf", &radius);
+                area = areaOfCircle(radius);
+                printf("Area of circle: %.2f\n", area);
+                break;
+            case 2:
+                printf("Enter length: ");
+                scanf("%lf", &length);
+                printf("Enter width: ");
+                scanf("%lf", &width);
+                area = areaOfRectangle(length, width);
+                printf("Area of rectangle: %.2f\n", area);
+                break;
+            case 3:
+                printf("Enter base: ");
+                scanf("%lf", &base);
+                printf("Enter height: ");
+                scanf("%lf", &height);
+                area = areaOfTriangle(base, height);
+                printf("Area of triangle: %.2f\n", area);
+                break;
+            case 4:
+                printf("Goodbye!\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
