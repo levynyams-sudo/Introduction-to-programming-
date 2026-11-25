@@ -1436,3 +1436,260 @@ int main() {
 //gcc path_analysis.c -o path_analysis
 //./path_analysis
 ```
+# Week 4
+
+
+## sum_numbers.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int n;
+    int sum = 0;
+    cout << "Enter a positive number (N): ";
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        sum += i;
+    }
+    cout << "The sum of numbers from 1 to " << n << " is: " << sum << endl;
+
+    return 0;
+}
+
+//g++ sum_numbers.cpp -o sum_numbers
+//./sum_numbers
+```
+
+
+## break_continue.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    cout << "Number filter: Skip multiples of 3, stop at 15" << endl;
+    for (int i = 1; i <= 20; i++) {
+        if (i == 15) {
+            cout << "Breaking at " << i << "!" << endl;
+            break;
+        }
+        if (i % 3 == 0) {
+            continue;
+        }
+        cout << i << " ";
+    }   // End of for loop
+    cout << endl;
+
+    return 0;
+}
+
+//g++ break_continue.cpp -o break_continue
+//./break_continue
+```
+
+
+## validation_while.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int number;
+    cout << "Enter a positive number: ";
+    cin >> number;
+    while (number <= 0) {
+        cout << "Invalid! Please enter a positive number: ";
+        cin >> number;
+    }
+    cout << "You entered: " << number << endl;
+
+    return 0;
+}
+
+//g++ validation_while.cpp -o validation_while
+//./validation_while
+```
+
+
+## validation_dowhile.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int number = 0;
+    do {
+        cout << "Enter a positive number: ";
+        cin >> number;
+        if (number <= 0) {
+            cout << "Invalid! ";
+        }
+    } while (number <= 0);   // Condition checked AFTER the body runs
+    cout << "You entered: " << number << endl;
+
+    return 0;
+}
+
+//g++ validation_dowhile.cpp -o validation_dowhile
+//./validation_dowhile
+```
+
+
+## multiplication_table.cpp
+
+```cpp
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+    cout << "========================================" << endl;
+    cout << " MULTIPLICATION TABLE (1 to 10)" << endl;
+    cout << "========================================" << endl;
+    cout << endl;
+    for (int i = 1; i <= 10; i++) {
+        for (int j = 1; j <= 10; j++) {
+            cout << setw(5) << i * j;
+        }
+        cout << endl;
+    }   // End of outer loop - all rows are printed
+    cout << "========================================" << endl;
+
+    return 0;
+}
+
+//g++ multiplication_table.cpp -o multiplication_table
+//./multiplication_table
+```
+
+
+## sum_numbers.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    int n;
+    int sum = 0;
+    printf("Enter a positive number (N): ");
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++) {
+        sum += i;
+    }
+    printf("The sum of numbers from 1 to %d is: %d\n", n, sum);
+
+    return 0;
+}
+
+//gcc sum_numbers.c -o sum_numbers
+//./sum_numbers
+```
+
+
+## break_continue.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    printf("Number filter: Skip multiples of 3, stop at 15\n");
+    for (int i = 1; i <= 20; i++) {
+        if (i == 15) {
+            printf("Breaking at %d!\n", i);
+            break;
+        }
+        if (i % 3 == 0) {
+            continue;
+        }
+        printf("%d ", i);
+    }   // End of for loop
+    printf("\n");
+
+    return 0;
+}
+
+//gcc break_continue.c -o break_continue
+//./break_continue
+```
+
+
+## validation_while.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    int number;
+    printf("Enter a positive number: ");
+    scanf("%d", &number);
+    while (number <= 0) {
+        printf("Invalid! Please enter a positive number: ");
+        scanf("%d", &number);
+    }
+    printf("You entered: %d\n", number);
+
+    return 0;
+}
+
+//gcc validation_while.c -o validation_while
+//./validation_while
+```
+
+
+## validation_dowhile.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    int number = 0;
+    do {
+        printf("Enter a positive number: ");
+        scanf("%d", &number);
+        if (number <= 0) {
+            printf("Invalid! ");
+        }
+    } while (number <= 0);   // Condition checked AFTER the body runs
+    printf("You entered: %d\n", number);
+
+    return 0;
+}
+
+//gcc validation_dowhile.c -o validation_dowhile
+//./validation_dowhile
+```
+
+
+## multiplication_table.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    printf("========================================\n");
+    printf(" MULTIPLICATION TABLE (1 to 10)\n");
+    printf("========================================\n\n");
+    for (int i = 1; i <= 10; i++) {
+        for (int j = 1; j <= 10; j++) {
+            printf("%5d", i * j);
+        }
+        printf("\n");
+    }   // End of outer loop - all rows are printed
+    printf("========================================\n");
+
+    return 0;
+}
+
+//gcc multiplication_table.c -o multiplication_table
+//./multiplication_table
+```
