@@ -2905,3 +2905,414 @@ int main() {
 //gcc dynamic_array.c -o dynamic_array
 //./dynamic_array
 ```
+# Week 8
+
+
+## encapsulation.cpp
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int age;
+public:
+    Student(string studentName, int studentAge) {
+        name = studentName;
+        setAge(studentAge);
+    }
+    string getName() {
+        return name;
+    }
+    void setAge(int newAge) {
+        if (newAge > 0 && newAge < 120) {
+            age = newAge;
+        } else {
+            cout << "Error: Invalid age! Age must be between 1 and 119." << endl;
+            age = 0;
+        }
+    }
+    int getAge() {
+        return age;
+    }
+};
+
+int main() {
+    Student s1("Alice", 20);
+    cout << "Student Name: " << s1.getName() << endl;
+    cout << "Student Age: " << s1.getAge() << endl;
+    cout << "\nAttempting to change age to 25..." << endl;
+    s1.setAge(25);
+    cout << "New Age: " << s1.getAge() << endl;
+    cout << "\nAttempting to change age to -5..." << endl;
+    s1.setAge(-5);   // This will trigger our validation error!
+    cout << "Age after invalid attempt: " << s1.getAge() << endl;
+
+    // Uncommenting the lines below will cause a compilation error!
+    // s1.age = 30; // ERROR: 'age' is private!
+    // s1.name = "Bob"; // ERROR: 'name' is private!
+
+    return 0;
+}
+
+//g++ encapsulation.cpp -o encapsulation
+//./encapsulation
+```
+
+
+## stack_vs_heap.cpp
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Car {
+public:
+    string model;
+    Car(string m) {
+        model = m;
+        cout << "Car created: " << model << endl;
+    }
+    ~Car() {
+        cout << "Car destroyed: " << model << endl;
+    }
+};
+
+int main() {
+    cout << "--- Creating Stack Object ---" << endl;
+    Car stackCar("Toyota");
+    cout << "\n--- Creating Heap Object ---" << endl;
+    Car* heapCar = new Car("Honda");
+    cout << "Heap car model: " << heapCar->model << endl;
+    cout << "\n--- End of main function ---" << endl;
+    delete heapCar;
+
+    return 0;
+}
+
+//g++ stack_vs_heap.cpp -o stack_vs_heap
+//./stack_vs_heap
+```
+
+
+## bank_account_design.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class BadBankAccount {
+public:
+    double balance;
+    BadBankAccount() {
+        balance = 0.0;
+    }
+};
+
+class GoodBankAccount {
+private:
+    double balance;
+public:
+    GoodBankAccount() {
+        balance = 0.0;
+    }
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+    double getBalance() {
+        return balance;
+    }
+};
+
+int main() {
+    cout << "--- Testing BAD Design ---" << endl;
+    BadBankAccount badAccount;
+    badAccount.balance = -5000;   // Impossible in real life!
+    cout << "Bad Account Balance: " << badAccount.balance << endl;
+    cout << "\n--- Testing GOOD Design ---" << endl;
+    GoodBankAccount goodAccount;
+
+    // goodAccount.balance = -5000; // ERROR! Private! The compiler will block this!
+    goodAccount.deposit(1000);
+    cout << "Good Account Balance: " << goodAccount.getBalance() << endl;
+
+    return 0;
+}
+
+//g++ bank_account_design.cpp -o bank_account_design
+//./bank_account_design
+```
+
+
+## bank_account.cpp
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class BankAccount {
+private:
+    string accountHolder;
+    double balance;
+public:
+    BankAccount(string name, double initialBalance) {
+        accountHolder = name;
+        if (initialBalance >= 0) {
+            balance = initialBalance;
+        } else {
+            balance = 0;
+            cout << "Warning: Initial balance cannot be negative. Set to 0." << endl;
+        }
+    }
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "Successfully deposited: $" << amount << endl;
+        } else {
+            cout << "Error: Deposit amount must be greater than 0." << endl;
+        }
+    }
+    void withdraw(double amount) {
+        if (amount <= 0) {
+            cout << "Error: Withdrawal amount must be greater than 0." << endl;
+
+            return;   // Exit the function early
+        }
+        if (amount > balance) {
+            cout << "Error: Insufficient funds! Current balance is $" << balance << endl;
+        } else {
+            balance -= amount;
+            cout << "Successfully withdrew: $" << amount << endl;
+        }
+    }
+    void displayBalance() {
+        cout << "Account Holder: " << accountHolder << endl;
+        cout << "Current Balance: $" << balance << endl;
+    }
+};
+
+int main() {
+    cout << "--- Opening Account ---" << endl;
+    BankAccount aliceAccount("Alice Smith", 500.00);
+    aliceAccount.displayBalance();
+    cout << "\n--- Attempting Deposits ---" << endl;
+    aliceAccount.deposit(200.00);   // Valid
+    aliceAccount.deposit(-50.00);   // Invalid (negative)
+    cout << "\n--- Attempting Withdrawals ---" << endl;
+    aliceAccount.withdraw(100.00);   // Valid
+    aliceAccount.withdraw(1000.00);   // Invalid (insufficient funds)
+    aliceAccount.withdraw(-20.00);   // Invalid (negative)
+    cout << "\n--- Final Account Status ---" << endl;
+    aliceAccount.displayBalance();
+
+    return 0;
+}
+
+//g++ bank_account.cpp -o bank_account
+//./bank_account
+```
+
+
+## encapsulation.c
+
+```c
+#include <stdio.h>   // For printf and scanf
+#include <string.h>   // For strcpy
+
+struct Student {
+    char name[50];
+    int age;
+};
+
+void setAge(struct Student *s, int newAge) {
+    if (newAge > 0 && newAge < 120) {
+        s->age = newAge;
+    } else {
+        printf("Error: Invalid age! Age must be between 1 and 119.\n");
+        s->age = 0;   // Set to default if invalid
+    }
+}
+
+int getAge(struct Student *s) {
+    return s->age;
+}
+
+int main() {
+    // 1. Create a Student struct on the stack
+    struct Student s1;
+    strcpy(s1.name, "Alice");
+    setAge(&s1, 20);
+    printf("Student Name: %s\n", s1.name);
+    printf("Student Age: %d\n", getAge(&s1));
+    printf("\nAttempting to change age to -5...\n");
+    setAge(&s1, -5);
+    printf("Age after invalid attempt: %d\n", getAge(&s1));
+
+    return 0;
+}
+
+//gcc encapsulation.c -o encapsulation
+//./encapsulation
+```
+
+
+## stack_vs_heap.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>   // Required for malloc and free
+#include <string.h>
+
+struct Car {
+    char model[20];
+};
+
+void initCar(struct Car *c, const char *modelName) {
+    strcpy(c->model, modelName);
+    printf("Car created: %s\n", c->model);
+}
+
+void destroyCar(struct Car *c) {
+    printf("Car destroyed: %s\n", c->model);
+}
+
+int main() {
+    printf("--- Creating Stack Object ---\n");
+    struct Car stackCar;
+    initCar(&stackCar, "Toyota");
+    printf("\n--- Creating Heap Object ---\n");
+    struct Car *heapCar = (struct Car*)malloc(sizeof(struct Car));
+    if (heapCar != NULL) {
+        initCar(heapCar, "Honda");
+        printf("Heap car model: %s\n", heapCar->model);
+    }
+    printf("\n--- End of main function ---\n");
+    if (heapCar != NULL) {
+        destroyCar(heapCar);
+        free(heapCar);
+        heapCar = NULL;   // Prevent dangling pointer
+    }
+
+    return 0;
+}
+
+//gcc stack_vs_heap.c -o stack_vs_heap
+//./stack_vs_heap
+```
+
+
+## bank_account_design.c
+
+```c
+#include <stdio.h>
+
+struct BadBankAccount {
+    double balance;
+};
+
+struct GoodBankAccount {
+    double balance;
+};
+
+void goodDeposit(struct GoodBankAccount *acc, double amount) {
+    if (amount > 0) {
+        acc->balance += amount;
+    }
+}
+
+int main() {
+    printf("--- Testing BAD Design ---\n");
+    struct BadBankAccount badAccount;
+    badAccount.balance = 100.0;
+    badAccount.balance = -5000.00;   // Impossible in real life!
+    printf("Bad Account Balance: %.2f\n", badAccount.balance);
+    printf("\n--- Testing GOOD Design ---\n");
+    struct GoodBankAccount goodAccount;
+    goodAccount.balance = 100.0;
+    goodDeposit(&goodAccount, 500.00);
+    printf("Good Account Balance: %.2f\n", goodAccount.balance);
+
+    return 0;
+}
+
+//gcc bank_account_design.c -o bank_account_design
+//./bank_account_design
+```
+
+
+## bank_account.c
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+struct BankAccount {
+    char accountHolder[50];
+    double balance;
+};
+
+void initAccount(struct BankAccount *acc, const char *name, double initialBalance) {
+    strcpy(acc->accountHolder, name);
+    if (initialBalance >= 0) {
+        acc->balance = initialBalance;
+    } else {
+        acc->balance = 0;
+        printf("Warning: Initial balance cannot be negative. Set to 0.\n");
+    }
+}
+
+void deposit(struct BankAccount *acc, double amount) {
+    if (amount > 0) {
+        acc->balance += amount;
+        printf("Successfully deposited: $%.2f\n", amount);
+    } else {
+        printf("Error: Deposit amount must be greater than 0.\n");
+    }
+}
+
+void withdraw(struct BankAccount *acc, double amount) {
+    if (amount <= 0) {
+        printf("Error: Withdrawal amount must be greater than 0.\n");
+
+        return;   // Exit the function early
+    }
+    if (amount > acc->balance) {
+        printf("Error: Insufficient funds! Current balance is $%.2f\n", acc->balance);
+    } else {
+        acc->balance -= amount;
+        printf("Successfully withdrew: $%.2f\n", amount);
+    }
+}
+
+void displayBalance(struct BankAccount *acc) {
+    printf("Account Holder: %s\n", acc->accountHolder);
+    printf("Current Balance: $%.2f\n", acc->balance);
+}
+
+int main() {
+    printf("--- Opening Account ---\n");
+    struct BankAccount aliceAccount;
+    initAccount(&aliceAccount, "Alice Smith", 500.00);
+    displayBalance(&aliceAccount);
+    printf("\n--- Attempting Deposits ---\n");
+    deposit(&aliceAccount, 200.00);   // Valid
+    deposit(&aliceAccount, -50.00);   // Invalid
+    printf("\n--- Attempting Withdrawals ---\n");
+    withdraw(&aliceAccount, 100.00);   // Valid
+    withdraw(&aliceAccount, 1000.00);   // Invalid (insufficient funds)
+    withdraw(&aliceAccount, -20.00);   // Invalid (negative)
+    printf("\n--- Final Account Status ---\n");
+    displayBalance(&aliceAccount);
+
+    return 0;
