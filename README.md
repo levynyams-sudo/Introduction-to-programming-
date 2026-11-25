@@ -2145,3 +2145,347 @@ int main() {
             default:
                 printf("Invalid choice. Please try again.\n");
         }
+# Week 6
+
+
+## linear_search.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int linearSearch(int arr[], int size, int target) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == target) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int main() {
+    int numbers[8] = {15, 42, 7, 89, 23, 56, 11, 74};
+    int size = sizeof(numbers) / sizeof(numbers[0]);
+    int target;
+    cout << "Array contents: ";
+    for (int i = 0; i < size; i++) {
+        cout << numbers[i] << " ";
+    }
+    cout << endl;
+    cout << "Enter a number to search: ";
+    cin >> target;
+    int position = linearSearch(numbers, size, target);
+    if (position != -1) {
+        cout << "Element found at index: " << position << endl;
+    } else {
+        cout << "Element not found in the array." << endl;
+    }
+
+    return 0;
+}
+
+//g++ linear_search.cpp -o linear_search
+//./linear_search
+```
+
+
+## row_major.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int matrix[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+    cout << "Row-major traversal (row by row):" << endl;
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            cout << matrix[row][col] << " ";
+        }
+        cout << endl;
+    }
+    cout << "\nMemory addresses (each int takes 4 bytes):" << endl;
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            cout << "matrix[" << row << "][" << col << "] = "
+                << matrix[row][col]
+                << " at address " << &matrix[row][col] << endl;
+        }
+    }
+    cout << "\nObservation: Addresses increase row by row." << endl;
+    cout << "Row 0 is stored completely, then row 1, then row 2." << endl;
+    cout << "This is called ROW-MAJOR ORDER." << endl;
+
+    return 0;
+}
+
+//g++ row_major.cpp -o row_major
+//./row_major
+```
+
+
+## cstring_version.cpp
+
+```cpp
+#include <iostream>
+#include <cstring>   // For strlen, strcpy
+
+using namespace std;
+
+int main() {
+    char name[50];
+    cout << "Enter your name: ";
+    cin.getline(name, 50);   // Reads a full line into the C-string
+    cout << "Name: " << name << endl;
+    cout << "Length: " << strlen(name) << endl;
+    cout << "First character: " << name[0] << endl;
+    char copy[50];
+    strcpy(copy, name);
+    cout << "Copy: " << copy << endl;
+
+    return 0;
+}
+
+//g++ cstring_version.cpp -o cstring_version
+//./cstring_version
+```
+
+
+## stdstring_version.cpp
+
+```cpp
+#include <iostream>
+#include <string>   // For std::string
+
+using namespace std;
+
+int main() {
+    string name;
+    cout << "Enter your name: ";
+    getline(cin, name);   // Reads a full line into the string
+    cout << "Name: " << name << endl;
+    cout << "Length: " << name.length() << endl;
+    cout << "First character: " << name[0] << endl;
+    string copy = name;
+    cout << "Copy: " << copy << endl;
+    string greeting = "Hello, " + name + "!";
+    cout << greeting << endl;
+
+    return 0;
+}
+
+//g++ stdstring_version.cpp -o stdstring_version
+//./stdstring_version
+```
+
+
+## score_analyzer.cpp
+
+```cpp
+#include <iostream>
+#include <iomanip>   // For setprecision
+
+using namespace std;
+
+double calculateAverage(int scores[], int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += scores[i];
+    }
+
+    return (double)sum / size;
+}
+
+void displayAboveAverage(int scores[], int size, double average) {
+    cout << "\nScores above average (" << average << "):" << endl;
+    bool found = false;
+    for (int i = 0; i < size; i++) {
+        if (scores[i] > average) {
+            cout << " Score " << scores[i] << " at position " << i + 1 << endl;
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << " None" << endl;
+    }
+}
+
+int main() {
+    const int SIZE = 10;   // Number of scores
+    int scores[SIZE];   // Array to store scores
+    cout << "Enter " << SIZE << " student scores:" << endl;
+    for (int i = 0; i < SIZE; i++) {
+        cout << "Score " << i + 1 << ": ";
+        cin >> scores[i];
+    }
+    double average = calculateAverage(scores, SIZE);
+    cout << "\n--- Results ---" << endl;
+    cout << "Average score: " << fixed << setprecision(2) << average << endl;
+    displayAboveAverage(scores, SIZE, average);
+
+    return 0;
+}
+
+//g++ score_analyzer.cpp -o score_analyzer
+//./score_analyzer
+```
+
+
+## linear_search.c
+
+```c
+#include <stdio.h>
+
+int linearSearch(int arr[], int size, int target) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == target) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int main() {
+    int numbers[8] = {15, 42, 7, 89, 23, 56, 11, 74};
+    int size = sizeof(numbers) / sizeof(numbers[0]);
+    int target;
+    printf("Array contents: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", numbers[i]);
+    }
+    printf("\n");
+    printf("Enter a number to search: ");
+    scanf("%d", &target);
+    int position = linearSearch(numbers, size, target);
+    if (position != -1) {
+        printf("Element found at index: %d\n", position);
+    } else {
+        printf("Element not found in the array.\n");
+    }
+
+    return 0;
+}
+
+//gcc linear_search.c -o linear_search
+//./linear_search
+```
+
+
+## row_major.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    int matrix[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+    printf("Row-major traversal (row by row):\n");
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            printf("%d ", matrix[row][col]);
+        }
+        printf("\n");
+    }
+    printf("\nMemory addresses (each int takes 4 bytes):\n");
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            printf("matrix[%d][%d] = %d at address %p\n",
+                    row, col, matrix[row][col], (void*)&matrix[row][col]);
+        }
+    }
+    printf("\nObservation: Addresses increase row by row.\n");
+    printf("Row 0 is stored completely, then row 1, then row 2.\n");
+    printf("This is called ROW-MAJOR ORDER.\n");
+
+    return 0;
+}
+
+//gcc row_major.c -o row_major
+//./row_major
+```
+
+
+## cstring_version.c
+
+```c
+#include <stdio.h>
+#include <string.h>   // For strlen, strcpy
+
+int main() {
+    char name[50];
+    printf("Enter your name: ");
+    fgets(name, 50, stdin);
+    name[strcspn(name, "\n")] = '\0';
+    printf("Name: %s\n", name);
+    printf("Length: %lu\n", strlen(name));
+    printf("First character: %c\n", name[0]);
+    char copy[50];
+    strcpy(copy, name);
+    printf("Copy: %s\n", copy);
+
+    return 0;
+}
+
+//gcc cstring_version.c -o cstring_version
+//./cstring_version
+```
+
+
+## score_analyzer.c
+
+```c
+#include <stdio.h>
+
+double calculateAverage(int scores[], int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += scores[i];
+    }
+
+    return (double)sum / size;
+}
+
+void displayAboveAverage(int scores[], int size, double average) {
+    printf("\nScores above average (%.2f):\n", average);
+    int found = 0;
+    for (int i = 0; i < size; i++) {
+        if (scores[i] > average) {
+            printf(" Score %d at position %d\n", scores[i], i + 1);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf(" None\n");
+    }
+}
+
+int main() {
+    const int SIZE = 10;   // Number of scores
+    int scores[SIZE];   // Array to store scores
+    printf("Enter %d student scores:\n", SIZE);
+    for (int i = 0; i < SIZE; i++) {
+        printf("Score %d: ", i + 1);
+        scanf("%d", &scores[i]);
+    }
+    double average = calculateAverage(scores, SIZE);
+    printf("\n--- Results ---\n");
+    printf("Average score: %.2f\n", average);
+    displayAboveAverage(scores, SIZE, average);
+
+    return 0;
+}
+
+//gcc score_analyzer.c -o score_analyzer
+//./score_analyzer
+```
