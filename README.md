@@ -2489,3 +2489,419 @@ int main() {
 //gcc score_analyzer.c -o score_analyzer
 //./score_analyzer
 ```
+# Week 7
+
+
+## pointer_arithmetic.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    int numbers[5] = {10, 20, 30, 40, 50};
+    int* ptr = numbers;
+    cout << "Array elements accessed via pointer arithmetic:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Value: " << *ptr << endl;
+        ptr++;
+    }
+    ptr = numbers;
+    cout << "\nAccessing using offset arithmetic:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Index " << i << " has value: " << *(ptr + i) << endl;
+    }
+
+    return 0;
+}
+
+//g++ pointer_arithmetic.cpp -o pointer_arithmetic
+//./pointer_arithmetic
+```
+
+
+## pointers_vs_references.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // 1. A normal integer variable
+    int originalValue = 100;
+
+    // 2. A REFERENCE variable.
+    int& refValue = originalValue;
+
+    // 3. A POINTER variable.
+    int* ptrValue = &originalValue;
+    cout << "--- Initial State ---" << endl;
+    cout << "originalValue: " << originalValue << endl;
+    cout << "refValue: " << refValue << endl;
+    cout << "ptrValue points to: " << *ptrValue << endl;   // * dereferences to get the value
+
+    // --- modification 1 ---
+    refValue = 200;
+    cout << "\n--- After setting refValue = 200 ---" << endl;
+    cout << "originalValue: " << originalValue << endl;   // Expected: 200
+    cout << "ptrValue points to: " << *ptrValue << endl;   // Expected: 200
+
+    // --- modification 2 ---
+    *ptrValue = 300;
+    cout << "\n--- After setting *ptrValue = 300 ---" << endl;
+    cout << "originalValue: " << originalValue << endl;   // Expected: 300
+    cout << "refValue: " << refValue << endl;   // Expected: 300
+
+    // --- modification 3 ---
+    int anotherValue = 500;
+    ptrValue = &anotherValue;
+    cout << "\n--- After pointing ptrValue to anotherValue ---" << endl;
+    cout << "originalValue: " << originalValue << endl;   // Expected: 300
+    cout << "ptrValue points to: " << *ptrValue << endl;   // Expected: 500
+
+    // refValue = anotherValue; would just copy the value 500 into originalValue.
+
+    return 0;
+}
+
+//g++ pointers_vs_references.cpp -o pointers_vs_references
+//./pointers_vs_references
+```
+
+
+## memory_leak.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+void createLeak() {
+    int* ptr = new int(42);
+    cout << "Inside function. The value is: " << *ptr << endl;
+    cout << "Memory allocated at address: " << ptr << endl;
+}
+
+int main() {
+    cout << "Calling function that leaks memory..." << endl;
+    createLeak();
+    cout << "Function finished. The memory is now leaked." << endl;
+
+    return 0;
+}
+
+//g++ memory_leak.cpp -o memory_leak
+//./memory_leak
+```
+
+
+## memory_leak_fix.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+void fixLeak() {
+    int* ptr = new int(42);
+    cout << "Inside fixed function. Value: " << *ptr << endl;
+    cout << "Memory allocated at address: " << ptr << endl;
+    delete ptr;
+    ptr = nullptr;
+    cout << "Memory has been successfully freed." << endl;
+}
+
+int main() {
+    cout << "--- Testing the Fix ---" << endl;
+    fixLeak();
+
+    return 0;
+}
+
+//g++ memory_leak_fix.cpp -o memory_leak_fix
+//./memory_leak_fix
+```
+
+
+## dynamic_array.cpp
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class DynamicArray {
+private:
+    int* data;
+    int size;
+    int capacity;
+public:
+    DynamicArray(int initialCapacity) {
+        capacity = initialCapacity;
+        size = 0;
+        data = new int[capacity];
+    }
+    ~DynamicArray() {
+        delete[] data;
+    }
+    void push_back(int value) {
+        // 1. Check if we have run out of space
+        if (size == capacity) {
+            int newCapacity = capacity * 2;
+            int* newData = new int[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newData[i] = data[i];
+            }
+            delete[] data;
+            data = newData;
+            capacity = newCapacity;
+            cout << "[Resized capacity from " << capacity/2 << " to " << capacity << "]" << endl;
+        }
+
+        // 2. Add the new value at the next available slot
+        data[size] = value;
+        size++;   // Increment the size counter
+    }
+    void display() {
+        cout << "Array (Size: " << size << ", Capacity: " << capacity << "): ";
+        for (int i = 0; i < size; i++) {
+            cout << data[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    DynamicArray myArray(2);
+    cout << "Created dynamic array with capacity 2." << endl;
+    myArray.push_back(10);
+    myArray.push_back(20);
+    myArray.display();
+    cout << "\nAdding third element..." << endl;
+    myArray.push_back(30);
+    myArray.display();
+    cout << "\nAdding fourth and fifth elements..." << endl;
+    myArray.push_back(40);
+    myArray.push_back(50);   // This will trigger another resize
+    myArray.display();
+
+    return 0;
+}
+
+//g++ dynamic_array.cpp -o dynamic_array
+//./dynamic_array
+```
+
+
+## pointer_arithmetic.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    int numbers[5] = {10, 20, 30, 40, 50};
+    int *ptr = numbers;
+    printf("Array elements accessed via pointer arithmetic:\n");
+    for (int i = 0; i < 5; i++) {
+        printf("Value: %d\n", *ptr);
+        ptr++;
+    }
+    ptr = numbers;
+    printf("\nAccessing using offset arithmetic:\n");
+    for (int i = 0; i < 5; i++) {
+        printf("Index %d has value: %d\n", i, *(ptr + i));
+    }
+
+    return 0;
+}
+
+//gcc pointer_arithmetic.c -o pointer_arithmetic
+//./pointer_arithmetic
+```
+
+
+## pointers_in_c.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    // 1. A normal integer variable
+    int originalValue = 100;
+
+    // 2. In C++, we would use a reference: int& refValue = originalValue;
+    int *ptr1 = &originalValue;
+    int *ptr2 = &originalValue;
+    printf("--- Initial State ---\n");
+    printf("originalValue: %d\n", originalValue);
+    printf("Value via ptr1: %d\n", *ptr1);   // * dereferences to get the value
+
+    // --- modification 1 ---
+    *ptr1 = 200;
+    printf("\n--- After setting *ptr1 = 200 ---\n");
+    printf("originalValue: %d\n", originalValue);   // Expected: 200
+    printf("Value via ptr2: %d\n", *ptr2);   // Expected: 200
+
+    // --- modification 2 ---
+    *ptr2 = 300;
+    printf("\n--- After setting *ptr2 = 300 ---\n");
+    printf("originalValue: %d\n", originalValue);   // Expected: 300
+    printf("Value via ptr1: %d\n", *ptr1);   // Expected: 300
+
+    // --- modification 3 ---
+    int anotherValue = 500;
+    ptr1 = &anotherValue;
+    printf("\n--- After pointing ptr1 to anotherValue ---\n");
+    printf("originalValue: %d\n", originalValue);   // Expected: 300 (Unchanged)
+    printf("Value via ptr1: %d\n", *ptr1);   // Expected: 500
+
+    return 0;
+}
+
+//gcc pointers_in_c.c -o pointers_in_c
+//./pointers_in_c
+```
+
+
+## memory_leak.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void createLeak() {
+    int *ptr = (int*)malloc(sizeof(int));
+    if (ptr == NULL) {
+        printf("Memory allocation failed!\n");
+
+        return;
+    }
+    *ptr = 42;
+    printf("Inside function. The value is: %d\n", *ptr);
+    printf("Memory allocated at address: %p\n", (void*)ptr);
+}
+
+int main() {
+    printf("Calling function that leaks memory...\n");
+    createLeak();
+    printf("Function finished. The memory is now leaked.\n");
+
+    return 0;
+}
+
+//gcc memory_leak.c -o memory_leak
+//./memory_leak
+```
+
+
+## memory_leak_fix.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void fixLeak() {
+    int *ptr = (int*)malloc(sizeof(int));
+    *ptr = 42;
+    printf("Inside fixed function. Value: %d\n", *ptr);
+    free(ptr);
+    ptr = NULL;
+    printf("Memory has been successfully freed.\n");
+}
+
+int main() {
+    printf("--- Testing the Fix ---\n");
+    fixLeak();
+
+    return 0;
+}
+
+//gcc memory_leak_fix.c -o memory_leak_fix
+//./memory_leak_fix
+```
+
+
+## dynamic_array.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int *data;
+    int size;
+    int capacity;
+} DynamicArray;
+void initArray(DynamicArray *arr, int initialCapacity) {
+    arr->capacity = initialCapacity;
+    arr->size = 0;
+    arr->data = (int*)malloc(arr->capacity * sizeof(int));
+    if (arr->data == NULL) {
+        printf("Failed to allocate memory.\n");
+        exit(1);
+    }
+}
+
+void freeArray(DynamicArray *arr) {
+    free(arr->data);
+    arr->data = NULL;
+    arr->size = 0;
+    arr->capacity = 0;
+}
+
+void push_back(DynamicArray *arr, int value) {
+    // 1. Check if we have run out of space
+    if (arr->size == arr->capacity) {
+        int newCapacity = arr->capacity * 2;
+        int *newData = (int*)malloc(newCapacity * sizeof(int));
+        if (newData == NULL) {
+            printf("Failed to allocate memory during resize.\n");
+
+            return;
+        }
+        for (int i = 0; i < arr->size; i++) {
+            newData[i] = arr->data[i];
+        }
+        free(arr->data);
+        arr->data = newData;
+        arr->capacity = newCapacity;
+        printf("[Resized capacity from %d to %d]\n", arr->capacity / 2, arr->capacity);
+    }
+
+    // 2. Add the new value at the next available slot
+    arr->data[arr->size] = value;
+    arr->size++;   // Increment the size counter
+}
+
+void display(DynamicArray *arr) {
+    printf("Array (Size: %d, Capacity: %d): ", arr->size, arr->capacity);
+    for (int i = 0; i < arr->size; i++) {
+        printf("%d ", arr->data[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    DynamicArray myArray;
+    initArray(&myArray, 2);
+    printf("Created dynamic array with capacity 2.\n");
+    push_back(&myArray, 10);
+    push_back(&myArray, 20);
+    display(&myArray);
+    printf("\nAdding third element...\n");
+    push_back(&myArray, 30);
+    display(&myArray);
+    printf("\nAdding fourth and fifth elements...\n");
+    push_back(&myArray, 40);
+    push_back(&myArray, 50);   // This will trigger another resize
+    display(&myArray);
+    freeArray(&myArray);
+
+    return 0;
+}
+
+//gcc dynamic_array.c -o dynamic_array
+//./dynamic_array
+```
