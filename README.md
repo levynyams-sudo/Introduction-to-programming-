@@ -3716,3 +3716,351 @@ int main() {
     }
 
     return 0;
+# Week 10
+
+
+## file_io_basics.cpp
+
+```cpp
+#include <iostream>
+#include <fstream>   // REQUIRED for file input/output
+
+using namespace std;
+
+int main() {
+    // 1. open file for reading (input)
+    ifstream inputFile("numbers.txt");
+    if (!inputFile.is_open()) {
+        cout << "Error: Could not open numbers.txt for reading!" << endl;
+
+        return 1;   // Exit with error code
+    }
+    int num;
+    int sum = 0;
+    cout << "Reading numbers from file..." << endl;
+
+    // 2. read data in a loop
+    while (inputFile >> num) {
+        cout << "Read: " << num << endl;
+        sum += num;
+    }
+
+    // 3. close the file
+    inputFile.close();
+    cout << "Total Sum: " << sum << endl;
+
+    // 4. open file for writing (output)
+    ofstream outputFile("sum.txt");
+    if (!outputFile.is_open()) {
+        cout << "Error: Could not create sum.txt for writing!" << endl;
+
+        return 1;
+    }
+
+    // 5. write data to the file
+    outputFile << "The total sum is: " << sum << endl;
+    outputFile << "Calculated automatically by the C++ program." << endl;
+
+    // 6. close the output file
+    outputFile.close();
+    cout << "Result successfully saved to sum.txt!" << endl;
+
+    return 0;
+}
+
+//g++ file_io_basics.cpp -o file_io_basics
+//./file_io_basics
+```
+
+
+## unhandled_error.cpp
+
+```cpp
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main() {
+    ifstream myFile("missing_file.txt");
+    string data;
+    cout << "Attempting to read from missing file..." << endl;
+    myFile >> data;
+    cout << "Data read: " << data << endl;
+    cout << "Program continued running without crashing." << endl;
+
+    return 0;
+}
+
+//g++ unhandled_error.cpp -o unhandled_error
+//./unhandled_error
+```
+
+
+## return_vs_exception.cpp
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <stdexcept>   // Required for standard exceptions
+
+using namespace std;
+
+bool readFileWithReturnCode(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        return false;
+    }
+
+    return true;
+}
+
+void readFileWithException(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        throw runtime_error("File not found: " + filename);
+    }
+}
+
+int main() {
+    cout << "--- Testing Return Code Strategy ---" << endl;
+    if (readFileWithReturnCode("data.txt") == false) {
+        cout << "Return Code: Handled error gracefully. Program continues." << endl;
+    }
+    cout << "\n--- Testing Exception Strategy ---" << endl;
+    try {
+        readFileWithException("data.txt");
+    }
+    catch (const runtime_error& e) {
+        cout << "Exception Caught: " << e.what() << endl;
+        cout << "Exception Strategy: Forced us to handle the error!" << endl;
+    }
+
+    return 0;
+}
+
+//g++ return_vs_exception.cpp -o return_vs_exception
+//./return_vs_exception
+```
+
+
+## robust_csv.cpp
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <sstream>   // Required for stringstream (parsing CSV)
+#include <string>
+#include <stdexcept>
+
+using namespace std;
+
+int main() {
+    ifstream file("students.csv");
+
+    // 1. handle missing file gracefully
+    if (!file.is_open()) {
+        cout << "Error: Could not find students.csv!" << endl;
+
+        return 1;
+    }
+    string line;
+    cout << "--- Processing Student Records ---" << endl;
+
+    // 2. read the file line by line
+    while (getline(file, line)) {
+        if (line.empty()) continue;
+        stringstream ss(line);
+        string name;
+        string scoreStr1, scoreStr2, scoreStr3;
+        getline(ss, name, ',');
+        getline(ss, scoreStr1, ',');
+        getline(ss, scoreStr2, ',');
+        getline(ss, scoreStr3, ',');
+
+        // 3. exception handling for malformed data
+        try {
+            int s1 = stoi(scoreStr1);
+            int s2 = stoi(scoreStr2);
+            int s3 = stoi(scoreStr3);
+            double average = (s1 + s2 + s3) / 3.0;
+            cout << name << " -> Average: " << average << endl;
+        } catch (const invalid_argument& e) {
+            cout << "WARNING: Skipping malformed record for " << name
+                << " (Invalid score data)." << endl;
+        }
+    }
+    file.close();
+    cout << "\n--- Processing Complete ---" << endl;
+
+    return 0;
+}
+
+//g++ robust_csv.cpp -o robust_csv
+//./robust_csv
+```
+
+
+## file_io_basics.c
+
+```c
+#include <stdio.h>
+#include <stdlib.h>   // REQUIRED for exit()
+
+int main() {
+    // 1. declare a file pointer
+    FILE *inputFile;
+    FILE *outputFile;
+
+    // 2. OPEN FILE FOR READING ("r" mode)
+    inputFile = fopen("numbers.txt", "r");
+    if (inputFile == NULL) {
+        printf("Error: Could not open numbers.txt for reading!\n");
+
+        return 1;   // Exit with error code
+    }
+    int num;
+    int sum = 0;
+    printf("Reading numbers from file...\n");
+
+    // 3. read data in a loop
+    while (fscanf(inputFile, "%d", &num) != EOF) {
+        printf("Read: %d\n", num);
+        sum += num;
+    }
+
+    // 4. close the file
+    fclose(inputFile);
+    printf("Total Sum: %d\n", sum);
+
+    // 5. OPEN FILE FOR WRITING ("w" mode)
+    outputFile = fopen("sum.txt", "w");
+    if (outputFile == NULL) {
+        printf("Error: Could not create sum.txt for writing!\n");
+
+        return 1;
+    }
+
+    // 6. write data to the file
+    fprintf(outputFile, "The total sum is: %d\n", sum);
+    fprintf(outputFile, "Calculated automatically by the C program.\n");
+
+    // 7. close the output file
+    fclose(outputFile);
+    printf("Result successfully saved to sum.txt!\n");
+
+    return 0;
+}
+
+//gcc file_io_basics.c -o file_io_basics
+//./file_io_basics
+```
+
+
+## unhandled_error.c
+
+```c
+#include <stdio.h>
+
+int main() {
+    FILE *myFile = fopen("missing_file.txt", "r");
+
+    // We are skipping the null check!
+    char data[100];
+    printf("Attempting to read from missing file...\n");
+
+    // Dereferencing a null pointer!
+    fscanf(myFile, "%s", data);
+    printf("Data read: %s\n", data);
+    fclose(myFile);
+
+    return 0;
+}
+
+//gcc unhandled_error.c -o unhandled_error
+//./unhandled_error
+```
+
+
+## return_codes.c
+
+```c
+#include <stdio.h>
+#include <errno.h>   // Required for errno
+#include <string.h>   // Required for strerror
+
+int readFileWithReturnCode(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        // Evaluation:
+        fprintf(stderr, "Error opening file: %s\n", strerror(errno));
+
+        return 1;
+    }
+    fclose(file);
+
+    return 0;   // Return 0 for success
+}
+
+int main() {
+    printf("--- Testing Return Code Strategy ---\n");
+    if (readFileWithReturnCode("data.txt") == 1) {
+        printf("Main function: Handled error gracefully. Program continues.\n");
+    }
+    printf("\n--- Evaluation ---\n");
+    printf("In C, we must manually check return codes.\n");
+    printf("If the programmer forgets to check, the program might crash later.\n");
+
+    return 0;
+}
+
+//gcc return_codes.c -o return_codes
+//./return_codes
+```
+
+
+## robust_csv.c
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    FILE *file = fopen("students.csv", "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error: Could not find students.csv!\n");
+
+        return 1;
+    }
+    char line[100];
+    printf("--- Processing Student Records ---\n");
+
+    // 1. read the file line by line
+    while (fgets(line, sizeof(line), file)) {
+        char name[20];
+        char scoreStr1[10], scoreStr2[10], scoreStr3[10];
+        int s1, s2, s3;
+
+        // 2. parse the csv line
+        int itemsRead = sscanf(line, "%[^,],%[^,],%[^,],%[^\n]",
+                                name, scoreStr1, scoreStr2, scoreStr3);
+        if (itemsRead != 4) {
+            printf("WARNING: Skipping malformed line format: %s", line);
+            continue;   // Skip to the next line in the while loop
+        }
+
+        // 3. EXCEPTION HANDLING (Simulated via Return Codes)
+        int valid1 = sscanf(scoreStr1, "%d", &s1);
+        int valid2 = sscanf(scoreStr2, "%d", &s2);
+        int valid3 = sscanf(scoreStr3, "%d", &s3);
+        if (valid1 == 1 && valid2 == 1 && valid3 == 1) {
+            double average = (s1 + s2 + s3) / 3.0;
+            printf("%s -> Average: %.2f\n", name, average);
+        } else {
+            printf("WARNING: Skipping malformed record for %s (Invalid score data).\n", name);
+        }
+    }
+    fclose(file);
+    printf("\n--- Processing Complete ---\n");
+
+    return 0;
